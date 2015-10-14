@@ -12,4 +12,7 @@
     <copyright>Copyright 2015</copyright>
     <tags>Template scaffold</tags>
   </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
 </package>
