@@ -1,16 +1,33 @@
-﻿function Get-CommandExists
+﻿function Get-CommandExists($commandName)
 {
-	Write-Host "Hello world"
-	Param ($command)
-	try
+	Try
 	{
-		Get-Command $command
-		return true
+		$oldPreference = $ErrorActionPreference
+		$ErrorActionPreference = 'stop'
+
+		$knownCommands = Get-Command $commandName
+	    return $True
 	}
-	catch
+	Catch
 	{
-		return false
+		return $False
+	}
+	Finally
+	{
+		$ErrorActionPreference = $oldPreference
 	}
 }
 
-Export-ModuleMember Get-CommandExists
+function Get-CheckEnvironment
+{
+	if (-Not (Get-CommandExists node))
+	{
+		Write-Host "Node not available"
+	}
+
+	Write-Error "error"
+	Throw ""
+	Write-Host "more stuff"
+}
+
+Export-ModuleMember Get-CheckEnvironment
