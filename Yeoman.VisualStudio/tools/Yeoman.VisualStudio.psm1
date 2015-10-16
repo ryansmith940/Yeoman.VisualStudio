@@ -37,6 +37,8 @@ function Prepare-Environment
 		Write-Warning "Yeoman is not installed.  Installing it now..."
 		Install-NpmModule "yo" $True
 	}
+
+	return $True
 }
 
 function Install-NpmModule($moduleName, $globally)
@@ -48,8 +50,20 @@ function Install-NpmModule($moduleName, $globally)
 function Run-Command($command)
 {
 	$cmd = "cmd"
-	$arguments = "\c " + $command
-	& $cmd $arguments -wait
+	$arguments = "/c " + $command
+	Start-Process $cmd $arguments -Wait
+}
+
+function Yo
+{
+	if(Prepare-Environment)
+	{
+		$solution = Get-Interface $dte.Solution ([EnvDTE80.Solution2])
+		$dte.
+		Run-Command("yo")
+	}
 }
 
 Export-ModuleMember Prepare-Environment
+Export-ModuleMember Run-Command
+Export-ModuleMember Yo
