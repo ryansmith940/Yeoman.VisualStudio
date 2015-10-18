@@ -50,7 +50,7 @@ function Install-NpmModule($moduleName, $globally)
 function Run-Command($command)
 {
 	$cmd = "cmd"
-	$arguments = "/c " + $command
+	$arguments = "/c " + $command + " | pause"
 	Start-Process $cmd $arguments -Wait
 }
 
@@ -59,7 +59,7 @@ function Yo
 	if(Prepare-Environment)
 	{
 		$solution = Get-Interface $dte.Solution ([EnvDTE80.Solution2])
-		$dte.
+		#$dte.
 		Run-Command("yo")
 	}
 }
