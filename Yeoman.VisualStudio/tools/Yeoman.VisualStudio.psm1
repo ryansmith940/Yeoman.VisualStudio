@@ -64,6 +64,15 @@ function Yo
 	}
 }
 
+function Ed
+{
+	Add-Type -Path "C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\envdte.dll"
+	Add-Type -Path "$PSScriptRoot\Yeoman.VisualStudio.dll"
+	$dte1 = Get-Interface $dte ([EnvDTE.DTE])
+	[Yeoman.VisualStudio.SolutionWrapper]::ShowItems($dte1)
+}
+
 Export-ModuleMember Prepare-Environment
 Export-ModuleMember Run-Command
 Export-ModuleMember Yo
+Export-ModuleMember Ed

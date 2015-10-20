@@ -9,11 +9,17 @@ namespace Yeoman.VisualStudio
 {
     public class SolutionWrapper
     {
-        public SolutionWrapper(EnvDTE.DTE dte)
+        public static void ShowItems(EnvDTE.DTE dte)
         {
-            foreach (Project item in dte.Solution.Projects)
+            foreach (Project project in dte.Solution.Projects)
             {
-                
+                foreach (ProjectItem projectItem in project.ProjectItems)
+                {
+                    for (short i = 0; i < projectItem.FileCount; i++)
+                    {
+                        Console.WriteLine(projectItem.FileNames[i]);
+                    }
+                }
             }
         }
     }
