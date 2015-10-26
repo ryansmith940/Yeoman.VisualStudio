@@ -47,20 +47,24 @@ function Install-NpmModule($moduleName, $globally)
 	Run-Command $command
 }
 
-function Run-Command($command)
+function Run-Command
 {
+	param(
+		[string]$command
+	)
+
 	$cmd = "cmd"
-	$arguments = "/c " + $command + " | pause"
+	$arguments = "/c " + $command + " " + $args + " & pause"
 	Start-Process $cmd $arguments -Wait
 }
 
-function Yo
+function Invoke-Yeoman
 {
 	if(Prepare-Environment)
 	{
 		$solution = Get-Interface $dte.Solution ([EnvDTE80.Solution2])
 		#$dte.
-		Run-Command("yo")
+		Run-Command "yo" @args
 	}
 }
 
@@ -74,5 +78,6 @@ function Ed
 
 Export-ModuleMember Prepare-Environment
 Export-ModuleMember Run-Command
-Export-ModuleMember Yo
+Export-ModuleMember Invoke-Yeoman
 Export-ModuleMember Ed
+Export-ModuleMember Get-CommandExists
