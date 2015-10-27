@@ -9,66 +9,36 @@ namespace Yeoman.VisualStudio
 {
     public class DirectoryWatcher
     {
-        private HashSet<string> changedFiles;
-        private List<string> filesToAdd;
-        private List<string> filesToRemove;
-        private FileSystemWatcher watcher;
+        private string[] filesAtStart;
+        private string[] filesAtEnd;
+        private IEnumerable<string> filesToAdd;
+        private IEnumerable<string> filesToRemove;
+        private string watchedDirectory;
 
         public DirectoryWatcher(string directory)
         {
-            this.watcher = new FileSystemWatcher(directory)
-            {
-                IncludeSubdirectories = true
-            };
-
-            this.watcher.Created += this.WatcherEventRaised;
-            this.watcher.Changed += this.WatcherEventRaised;
-            this.watcher.Deleted += this.WatcherEventRaised;
-            this.watcher.Renamed += this.WatcherEventRaised;
-            this.watcher.Error += this.Watcher_Error;
-        }
-
-        private void Watcher_Error(object sender, ErrorEventArgs e)
-        {
-            throw new Exception("The watcher threw an exception", e.GetException());
-        }
-
-        private void WatcherEventRaised(object sender, FileSystemEventArgs e)
-        {
-            this.changedFiles.Add(e.FullPath);
+            this.watchedDirectory = directory;
         }
 
         public bool IsWatching
         {
-            get
-            {
-                return this.watcher.EnableRaisingEvents;
-            }
+            get;
+            private set;
         }
 
         public void StartWatching()
         {
-            this.changedFiles = new HashSet<string>();
-            this.watcher.EnableRaisingEvents = true;
+            this.filesAtStart = Directory.GetFiles(this.watchedDirectory);
+            this.IsWatching = true;
         }
 
         public void EndWatching()
         {
-            this.watcher.EnableRaisingEvents = false;
-            this.filesToAdd = new List<string>();
-            this.filesToRemove = new List<string>();
+            this.filesAtEnd = Directory.GetFiles(this.watchedDirectory);
+            this.IsWatching = false;
 
-            foreach (var changedFile in this.changedFiles)
-            {
-                if (File.Exists(changedFile))
-                {
-                    this.filesToAdd.Add(changedFile);
-                }
-                else
-                {
-                    this.filesToRemove.Add(changedFile);
-                }
-            }
+            this.filesToRemove = this.filesAtStart.Except(this.filesAtEnd);
+            this.filesToAdd = this.filesAtEnd.Except(this.filesAtStart);
         }
 
         public IEnumerable<string> GetFilesToAdd()

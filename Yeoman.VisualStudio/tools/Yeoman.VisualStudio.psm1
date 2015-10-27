@@ -70,10 +70,16 @@ function Invoke-Yeoman
 
 function Ed
 {
-	Add-Type -Path "C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\envdte.dll"
 	Add-Type -Path "$PSScriptRoot\Yeoman.VisualStudio.dll"
-	$dte1 = Get-Interface $dte ([EnvDTE.DTE])
-	[Yeoman.VisualStudio.SolutionWrapper]::ShowItems($dte1)
+	$proj = Get-Project
+	$projectDir = Split-Path $proj.FullName
+	$dirWatcher = New-Object Yeoman.VisualStudio.DirectoryWatcher $projectDir
+	$dirWatcher.StartWatching()
+
+	Run-Command "echo cd to `"$projectDir`" & cd `"$projectDir`" && yo" @args
+
+	$dirWatcher.EndWatching()
+	$dirWatcher.GetFilesToAdd()
 }
 
 Export-ModuleMember Prepare-Environment
