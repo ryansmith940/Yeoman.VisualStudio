@@ -68,13 +68,12 @@ function Invoke-Yeoman
 		$dirWatcher = New-Object Yeoman.VisualStudio.DirectoryWatcher $projectDir
 		$dirWatcher.StartWatching()
 
+		Write-Host "Starting yeoman..."
 		Invoke-Command "echo cd to `"$projectDir`" & cd `"$projectDir`" && yo" @args
+		Write-Host "Adding files to project..."
 
 		$dirWatcher.EndWatching()
 		$filesToAdd = $dirWatcher.GetFilesToAdd() 
-		$proj
-		$filesToAdd
-		$proj
 		foreach($fileToAdd in $filesToAdd)
 		{
 			$filename = Split-Path $fileToAdd -Leaf
@@ -85,33 +84,17 @@ function Invoke-Yeoman
 			{
 				if($itemName -eq $filename)
 				{
-					$projectItem.ProjectItems.AddFromFile($fileToAdd)
+				 	$addedFileProjectItem = $projectItem.ProjectItems.AddFromFile($fileToAdd)
 				}
 				else
 				{
+					$projectItem
 					$projectItem = Get-ProjectItem $projectItem $itemName
 				}
 			}
 		}
-	}
-}
 
-function Check-Foreach
-{
-	Add-Type -Path "$PSScriptRoot\Yeoman.VisualStudio.dll"
-	$filename = "dir3"
-	$intermediatePaths = [Yeoman.VisualStudio.SolutionWrapper]::GetIntermediateDirectories("C:\dir1\dir2", "C:\dir1\dir2\dir3\dir4\dir5")
-	$intermediatePaths | ForEach-Object	{
-		$itemName = $_
-		if($itemName -eq $filename)
-		{
-			Write-Host "Found filename"
-			Write-Host $itemName
-		}
-		else
-		{
-			Write-Host $itemName
-		}
+		Write-Host "Done!"
 	}
 }
 
@@ -122,14 +105,76 @@ function Get-ProjectItem
 		$itemName
 	)
 
-	$foundItem = $projectItem.ProjectItems | Where-Object -Property Name -EQ $itemName
+	$foundItem = Get-ItemInProject $projectItem $itemName
 	if($foundItem)
 	{
-		$projectItem.ProjectItems.Item($itemName)
+		$itemProject = $projectItem.ProjectItems.Item($itemName)
 	}
 	else
 	{
-		$projectItem.ProjectItems.AddFolder($itemName)
+		$itemProject = Add-ProjectFolder($projectItem, $itemName)
+	}
+
+	return $itemProject
+}
+
+function Get-ItemInProject
+{
+	param(
+		$projectItem,
+		$itemName
+	)
+
+	$foundItem = $projectItem.ProjectItems | Where-Object -Property Name -EQ $itemName
+	return $foundItem
+}
+
+function Add-ProjectFolder
+{
+	param(
+		$projectItem,
+		$folderName
+	)
+
+	$folderInProject = Get-ItemInProject $projectItem $folderName
+	if($folderInProject)
+	{
+		return $folderInProject
+	}
+	else
+	{
+		$projectItem
+		$projectItemFullPath = $projectItem.Properties.Item("FullPath").Value
+		$folderFullPath = Join-Path $projectItemFullPath $folderName
+		$folderExists = Test-Path $folderFullPath
+
+		if($folderExists)
+		{
+			# Find unused folder name for temporary storage
+			$tempFolderName = "_" + $folderName
+			while(Join-Path $projectItemFullPath $tempFolderName | Test-Path)
+			{
+				$tempFolderName = "_" + $tempFolderName
+			}
+
+			# Rename existing folder to temporary name
+			$tempFolderFullPath = Join-Path $projectItemFullPath $tempFolderName
+			Rename-Item $folderFullPath $tempFolderName
+
+			# re-create the folder
+			$folderProjectItem = $projectItem.ProjectItems.AddFolder($folderName)
+
+			# move items from temporary folder into re-created folder and delete temporary folder
+		 	$tempContents = Join-Path $tempFolderFullPath "*" 
+			Move-Item $tempContents $folderFullPath
+			Remove-Item $tempFolderFullPath
+
+			return $folderProjectItem
+		}
+		else
+		{
+			return $projectItem.ProjectItems.AddFolder($folderName)
+		}
 	}
 }
 
@@ -139,5 +184,3 @@ Export-ModuleMember Initialize-Environment
 Export-ModuleMember Invoke-Command
 Export-ModuleMember -Function Invoke-Yeoman -Alias yeo
 Export-ModuleMember Get-CommandExists
-
-Export-ModuleMember Check-Foreach
