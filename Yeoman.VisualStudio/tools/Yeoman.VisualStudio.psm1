@@ -18,7 +18,7 @@
 	}
 }
 
-function Prepare-Environment
+function Initialize-Environment
 {
 	if (-Not (Get-CommandExists node))
 	{
@@ -44,10 +44,10 @@ function Prepare-Environment
 function Install-NpmModule($moduleName, $globally)
 {
 	$command = "npm install " + @{$true="-g ";$false=" "}[$globally] + $moduleName
-	Run-Command $command
+	Invoke-Command $command
 }
 
-function Run-Command
+function Invoke-Command
 {
 	param(
 		[string]$command
@@ -60,30 +60,60 @@ function Run-Command
 
 function Invoke-Yeoman
 {
-	if(Prepare-Environment)
+	if(Initialize-Environment)
 	{
-		$solution = Get-Interface $dte.Solution ([EnvDTE80.Solution2])
-		#$dte.
-		Run-Command "yo" @args
+		Add-Type -Path "$PSScriptRoot\Yeoman.VisualStudio.dll"
+		$proj = Get-Project
+		$projectDir = Split-Path $proj.FullName
+		$dirWatcher = New-Object Yeoman.VisualStudio.DirectoryWatcher $projectDir
+		$dirWatcher.StartWatching()
+
+		Invoke-Command "echo cd to `"$projectDir`" & cd `"$projectDir`" && yo" @args
+
+		$dirWatcher.EndWatching()
+		$dirWatcher.GetFilesToAdd() | ForEach-Object 
+		{
+			$fileToAdd = $_ 
+			$filename = Split-Path $fileToAdd -Leaf
+
+			$intermediatePaths = [Yeoman.VisualStudio.SolutionWrapper]::GetIntermediateDirectories($projectDir, $fileToAdd)
+			$projectItem = $proj
+			foreach($itemName in $intermediatePaths)
+			{
+				if($itemName -eq $filename)
+				{
+					$projectItem.ProjectItems.AddFromFile($fileToAdd)
+				}
+				else
+				{
+					$projectItem = Get-ProjectItem $projectItem $itemName
+				}
+			}
+		}
 	}
 }
 
-function Ed
+function Get-ProjectItem
 {
-	Add-Type -Path "$PSScriptRoot\Yeoman.VisualStudio.dll"
-	$proj = Get-Project
-	$projectDir = Split-Path $proj.FullName
-	$dirWatcher = New-Object Yeoman.VisualStudio.DirectoryWatcher $projectDir
-	$dirWatcher.StartWatching()
+	param(
+		$projectItem,
+		$itemName
+	)
 
-	Run-Command "echo cd to `"$projectDir`" & cd `"$projectDir`" && yo" @args
-
-	$dirWatcher.EndWatching()
-	$dirWatcher.GetFilesToAdd()
+	$foundItem = $projectItem.ProjectItems | Where-Object -Property Name -EQ $itemName
+	if($foundItem)
+	{
+		$projectItem.ProjectItems.Item($itemName)
+	}
+	else
+	{
+		$projectItem.ProjectItems.AddDirectory($itemName)
+	}
 }
 
-Export-ModuleMember Prepare-Environment
-Export-ModuleMember Run-Command
-Export-ModuleMember Invoke-Yeoman
-Export-ModuleMember Ed
+Set-Alias yeo Invoke-Yeoman
+
+Export-ModuleMember Initialize-Environment
+Export-ModuleMember Invoke-Command
+Export-ModuleMember -Function Invoke-Yeoman -Alias yeo
 Export-ModuleMember Get-CommandExists

@@ -28,13 +28,13 @@ namespace Yeoman.VisualStudio
 
         public void StartWatching()
         {
-            this.filesAtStart = Directory.GetFiles(this.watchedDirectory);
+            this.filesAtStart = GetFilesInDirectory(this.watchedDirectory);
             this.IsWatching = true;
         }
 
         public void EndWatching()
         {
-            this.filesAtEnd = Directory.GetFiles(this.watchedDirectory);
+            this.filesAtEnd = GetFilesInDirectory(this.watchedDirectory);
             this.IsWatching = false;
 
             this.filesToRemove = this.filesAtStart.Except(this.filesAtEnd);
@@ -59,6 +59,12 @@ namespace Yeoman.VisualStudio
             }
 
             return this.filesToRemove.AsEnumerable<string>();
+        }
+
+        private static string[] GetFilesInDirectory(string directory)
+        {
+            var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
+            return files;
         }
     }
 }
