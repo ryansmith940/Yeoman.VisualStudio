@@ -71,9 +71,12 @@ function Invoke-Yeoman
 		Invoke-Command "echo cd to `"$projectDir`" & cd `"$projectDir`" && yo" @args
 
 		$dirWatcher.EndWatching()
-		$dirWatcher.GetFilesToAdd() | ForEach-Object 
+		$filesToAdd = $dirWatcher.GetFilesToAdd() 
+		$proj
+		$filesToAdd
+		$proj
+		foreach($fileToAdd in $filesToAdd)
 		{
-			$fileToAdd = $_ 
 			$filename = Split-Path $fileToAdd -Leaf
 
 			$intermediatePaths = [Yeoman.VisualStudio.SolutionWrapper]::GetIntermediateDirectories($projectDir, $fileToAdd)
@@ -93,6 +96,25 @@ function Invoke-Yeoman
 	}
 }
 
+function Check-Foreach
+{
+	Add-Type -Path "$PSScriptRoot\Yeoman.VisualStudio.dll"
+	$filename = "dir3"
+	$intermediatePaths = [Yeoman.VisualStudio.SolutionWrapper]::GetIntermediateDirectories("C:\dir1\dir2", "C:\dir1\dir2\dir3\dir4\dir5")
+	$intermediatePaths | ForEach-Object	{
+		$itemName = $_
+		if($itemName -eq $filename)
+		{
+			Write-Host "Found filename"
+			Write-Host $itemName
+		}
+		else
+		{
+			Write-Host $itemName
+		}
+	}
+}
+
 function Get-ProjectItem
 {
 	param(
@@ -107,7 +129,7 @@ function Get-ProjectItem
 	}
 	else
 	{
-		$projectItem.ProjectItems.AddDirectory($itemName)
+		$projectItem.ProjectItems.AddFolder($itemName)
 	}
 }
 
@@ -117,3 +139,5 @@ Export-ModuleMember Initialize-Environment
 Export-ModuleMember Invoke-Command
 Export-ModuleMember -Function Invoke-Yeoman -Alias yeo
 Export-ModuleMember Get-CommandExists
+
+Export-ModuleMember Check-Foreach
