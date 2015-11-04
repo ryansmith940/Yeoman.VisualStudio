@@ -89,33 +89,13 @@ function Invoke-Yeoman
 				else
 				{
 					$projectItem
-					$projectItem = Get-ProjectItem $projectItem $itemName
+					$projectItem = Add-ProjectFolder $projectItem $itemName
 				}
 			}
 		}
 
 		Write-Host "Done!"
 	}
-}
-
-function Get-ProjectItem
-{
-	param(
-		$projectItem,
-		$itemName
-	)
-
-	$foundItem = Get-ItemInProject $projectItem $itemName
-	if($foundItem)
-	{
-		$itemProject = $projectItem.ProjectItems.Item($itemName)
-	}
-	else
-	{
-		$itemProject = Add-ProjectFolder($projectItem, $itemName)
-	}
-
-	return $itemProject
 }
 
 function Get-ItemInProject
@@ -139,7 +119,7 @@ function Add-ProjectFolder
 	$folderInProject = Get-ItemInProject $projectItem $folderName
 	if($folderInProject)
 	{
-		return $folderInProject
+		return $projectItem.ProjectItems.Item($folderName)
 	}
 	else
 	{
@@ -184,3 +164,4 @@ Export-ModuleMember Initialize-Environment
 Export-ModuleMember Invoke-Command
 Export-ModuleMember -Function Invoke-Yeoman -Alias yeo
 Export-ModuleMember Get-CommandExists
+Export-ModuleMember Add-ProjectFolder
