@@ -82,15 +82,22 @@ function Invoke-Yeoman
 			$projectItem = $proj
 			foreach($itemName in $intermediatePaths)
 			{
-				if($itemName -eq $filename)
+				$itemIsInProject = Get-ItemInProject $projectItem $itemName
+				if(-Not ($itemIsInProject))
 				{
-				 	$addedFileProjectItem = $projectItem.ProjectItems.AddFromFile($fileToAdd)
+					if($itemName -eq $filename)
+					{
+				 		$addedFileProjectItem = $projectItem.ProjectItems.AddFromFile($fileToAdd)
+					}
+					else
+					{
+						$projectItemFullPath = $projectItem.Properties.Item("FullPath").Value
+						$folderFullPath = Join-Path $projectItemFullPath $itemName
+						$projectItem.ProjectItems.AddFromDirectory($folderFullPath)
+					}
 				}
-				else
-				{
-					$projectItem
-					$projectItem = Add-ProjectFolder $projectItem $itemName
-				}
+				
+				$projectItem = $projectItem.ProjectItems.Item($itemName)
 			}
 		}
 
