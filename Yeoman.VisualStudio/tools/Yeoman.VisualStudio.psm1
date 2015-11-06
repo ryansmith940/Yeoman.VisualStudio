@@ -58,6 +58,20 @@ function Invoke-Command
 	Start-Process $cmd $arguments -Wait
 }
 
+function Get-IgnoredDirectories
+{
+	$proj = Get-Project
+	$ignoreFileName = "ignore.properties"
+	$ignoreFileExists = Get-ItemInProject $proj $ignoreFileName
+	if($ignoreFileExists)
+	{
+		$projectFullPath = $proj.Properties.Item("FullPath").Value
+		$ignoreFileFullPath = Join-Path $projectItemFullPath $ignoreFileName
+
+		Get-Content $ignoreFileFullPath
+	}
+}
+
 function Invoke-Yeoman
 {
 	if(Initialize-Environment)
@@ -80,6 +94,7 @@ function Invoke-Yeoman
 
 			$intermediatePaths = [Yeoman.VisualStudio.SolutionWrapper]::GetIntermediateDirectories($projectDir, $fileToAdd)
 			$projectItem = $proj
+			$ignoredDirectories = Get-IgnoredDirectories
 			foreach($itemName in $intermediatePaths)
 			{
 				$itemIsInProject = Get-ItemInProject $projectItem $itemName
@@ -89,11 +104,15 @@ function Invoke-Yeoman
 					{
 				 		$addedFileProjectItem = $projectItem.ProjectItems.AddFromFile($fileToAdd)
 					}
-					else
+					elif($ignoredDirectories -notcontains $itemName)
 					{
 						$projectItemFullPath = $projectItem.Properties.Item("FullPath").Value
 						$folderFullPath = Join-Path $projectItemFullPath $itemName
-						$projectItem.ProjectItems.AddFromDirectory($folderFullPath)
+						$addedDirectoryItems = $projectItem.ProjectItems.AddFromDirectory($folderFullPath)
+					}
+					else
+					{
+						continue
 					}
 				}
 				
