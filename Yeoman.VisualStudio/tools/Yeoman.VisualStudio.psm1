@@ -101,6 +101,7 @@ function Invoke-Yeoman
 			}
 		}
 
+		$proj.Save()
 		Write-Host "Done!"
 	}
 }
@@ -116,59 +117,9 @@ function Get-ItemInProject
 	return $foundItem
 }
 
-function Add-ProjectFolder
-{
-	param(
-		$projectItem,
-		$folderName
-	)
-
-	$folderInProject = Get-ItemInProject $projectItem $folderName
-	if($folderInProject)
-	{
-		return $projectItem.ProjectItems.Item($folderName)
-	}
-	else
-	{
-		$projectItem
-		$projectItemFullPath = $projectItem.Properties.Item("FullPath").Value
-		$folderFullPath = Join-Path $projectItemFullPath $folderName
-		$folderExists = Test-Path $folderFullPath
-
-		if($folderExists)
-		{
-			# Find unused folder name for temporary storage
-			$tempFolderName = "_" + $folderName
-			while(Join-Path $projectItemFullPath $tempFolderName | Test-Path)
-			{
-				$tempFolderName = "_" + $tempFolderName
-			}
-
-			# Rename existing folder to temporary name
-			$tempFolderFullPath = Join-Path $projectItemFullPath $tempFolderName
-			Rename-Item $folderFullPath $tempFolderName
-
-			# re-create the folder
-			$folderProjectItem = $projectItem.ProjectItems.AddFolder($folderName)
-
-			# move items from temporary folder into re-created folder and delete temporary folder
-		 	$tempContents = Join-Path $tempFolderFullPath "*" 
-			Move-Item $tempContents $folderFullPath
-			Remove-Item $tempFolderFullPath
-
-			return $folderProjectItem
-		}
-		else
-		{
-			return $projectItem.ProjectItems.AddFolder($folderName)
-		}
-	}
-}
-
 Set-Alias yeo Invoke-Yeoman
 
 Export-ModuleMember Initialize-Environment
 Export-ModuleMember Invoke-Command
 Export-ModuleMember -Function Invoke-Yeoman -Alias yeo
 Export-ModuleMember Get-CommandExists
-Export-ModuleMember Add-ProjectFolder
