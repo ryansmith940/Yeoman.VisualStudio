@@ -48,7 +48,7 @@
   <ItemGroup>
     <None Include="tools\init.ps1" />
     <None Include="tools\Yeoman.VisualStudio.psm1" />
-    <Content Include="yeo.ignore" />
+    <None Include="yeo.ignore" />
     <None Include="Yeoman.VisualStudio.nuspec">
       <SubType>Designer</SubType>
     </None>

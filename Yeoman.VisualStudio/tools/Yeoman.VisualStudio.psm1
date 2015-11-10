@@ -63,7 +63,6 @@ function Invoke-Yeoman
 	if(Initialize-Environment)
 	{
 		$dllPath = Join-Path $PSScriptRoot "Yeoman.VisualStudio.dll"
-		Write-Host "dll path: $dllPath"
 		Add-Type -Path $dllPath
 		$proj = Get-Project
 		$projectDir = Split-Path $proj.FullName
@@ -80,7 +79,7 @@ function Invoke-Yeoman
 		{
 			$filename = Split-Path $fileToAdd -Leaf
 
-			$intermediatePaths = [Yeoman.VisualStudio.SolutionWrapper]::GetIntermediateDirectories($projectDir, $fileToAdd)
+			$intermediatePaths = [Yeoman.VisualStudio.DirectoryUtilities]::GetIntermediateDirectories($projectDir, $fileToAdd)
 			$projectItem = $proj
 			$ignoredDirectories = Get-IgnoredDirectories
 			foreach($itemName in $intermediatePaths)
