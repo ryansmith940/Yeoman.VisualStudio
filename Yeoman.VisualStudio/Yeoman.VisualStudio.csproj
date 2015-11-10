@@ -48,7 +48,6 @@
     <Compile Include="DirectoryUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="readme.md" />
     <None Include="tools\init.ps1" />
     <None Include="tools\Yeoman.VisualStudio.psm1" />
     <Content Include="yeo.ignore" />
