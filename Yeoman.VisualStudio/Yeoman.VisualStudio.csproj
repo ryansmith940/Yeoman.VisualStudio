@@ -37,10 +37,12 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Yeoman.VisualStudio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Yeoman.VisualStudio.IntegrationTests\packages\Yeoman.VisualStudio.1.0.0.0\lib\net35\Yeoman.VisualStudio.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DirectoryWatcher.cs" />
@@ -48,10 +50,13 @@
     <Compile Include="DirectoryUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="tools\init.ps1" />
     <None Include="tools\Yeoman.VisualStudio.psm1" />
     <Content Include="yeo.ignore" />
-    <None Include="Yeoman.VisualStudio.nuspec" />
+    <None Include="Yeoman.VisualStudio.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

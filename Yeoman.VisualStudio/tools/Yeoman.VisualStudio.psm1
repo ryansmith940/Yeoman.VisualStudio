@@ -62,7 +62,9 @@ function Invoke-Yeoman
 {
 	if(Initialize-Environment)
 	{
-		Add-Type -Path "$PSScriptRoot\Yeoman.VisualStudio.dll"
+		$dllPath = Join-Path $PSScriptRoot "Yeoman.VisualStudio.dll"
+		Write-Host "dll path: $dllPath"
+		Add-Type -Path $dllPath
 		$proj = Get-Project
 		$projectDir = Split-Path $proj.FullName
 		$dirWatcher = New-Object Yeoman.VisualStudio.DirectoryWatcher $projectDir
@@ -88,21 +90,17 @@ function Invoke-Yeoman
 				{
 					if($itemName -eq $filename)
 					{
-						Write-Host "Write file $fileToAdd"
 				 		$addedFileProjectItem = $projectItem.ProjectItems.AddFromFile($fileToAdd)
 					}
 					elseif($ignoredDirectories -notcontains $itemName)
 					{
-						Write-Host "Adding Directory $itemName"
 						$projectItemFullPath = $projectItem.Properties.Item("FullPath").Value
 						$folderFullPath = Join-Path $projectItemFullPath $itemName
 
-						Write-Host "Full folder path: $folderFullPath"
 						$addedDirectoryItems = $projectItem.ProjectItems.AddFromDirectory($folderFullPath)
 					}
 					else
 					{
-						Write-Host "Skipping item $itemName"
 						break
 					}
 				}

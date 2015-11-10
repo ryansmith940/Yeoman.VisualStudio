@@ -7,11 +7,13 @@
     <authors>$author$</authors>
     <owners>$author$</owners>
     <projectUrl>https://github.com/ryansmith940/Yeoman.VisualStudio</projectUrl>
+    <licenseUrl>https://github.com/ryansmith940/Yeoman.VisualStudio/blob/master/LICENSE.txt</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>Copyright 2015</copyright>
     <tags>Template scaffold</tags>
     <developmentDependency>true</developmentDependency>
+    <references></references>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
