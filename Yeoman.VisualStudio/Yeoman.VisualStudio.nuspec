@@ -1,21 +1,24 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <id>Yeoman.VisualStudio</id>
+    <version>1.0.0.0</version>
+    <title>Yeoman.VisualStudio</title>
+    <authors>Ryan Smith</authors>
+    <owners>Ryan Smith</owners>
     <projectUrl>https://github.com/ryansmith940/Yeoman.VisualStudio</projectUrl>
     <licenseUrl>https://github.com/ryansmith940/Yeoman.VisualStudio/blob/master/LICENSE.txt</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Adds Yeoman functionality to VisualStudio.</description>
     <copyright>Copyright 2015</copyright>
     <tags>Template scaffold</tags>
     <developmentDependency>true</developmentDependency>
     <references></references>
   </metadata>
   <files>
+    <file src="content*" target="content" />
+    <file src="content\" target="content\" />
     <file src="tools\**" target="tools" />
+    <file src="..\LICENSE.txt" target="LICENSE.txt" />
   </files>
 </package>

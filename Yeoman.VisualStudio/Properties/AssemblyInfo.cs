@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Yeoman.VisualStudio")]
 [assembly: AssemblyDescription("Adds Yeoman functionality to VisualStudio.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Pioneer Hi-Bred")]
+[assembly: AssemblyCompany("Ryan Smith")]
 [assembly: AssemblyProduct("Yeoman.VisualStudio")]
-[assembly: AssemblyCopyright("Copyright © Pioneer Hi-Bred 2015")]
+[assembly: AssemblyCopyright("Copyright © Ryan Smith <ryansmith940@gmail.com> 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
