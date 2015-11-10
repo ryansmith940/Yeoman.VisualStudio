@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Yeoman.VisualStudio
+﻿namespace Yeoman.VisualStudio
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
     public class DirectoryWatcher
     {
         private string[] filesAtStart;

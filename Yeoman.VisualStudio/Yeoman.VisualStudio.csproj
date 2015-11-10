@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Yeoman.VisualStudio</RootNamespace>
     <AssemblyName>Yeoman.VisualStudio</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -33,10 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="envdte, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,11 +45,13 @@
   <ItemGroup>
     <Compile Include="DirectoryWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SolutionWrapper.cs" />
+    <Compile Include="DirectoryUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="readme.md" />
     <None Include="tools\init.ps1" />
     <None Include="tools\Yeoman.VisualStudio.psm1" />
+    <Content Include="yeo.ignore" />
     <None Include="Yeoman.VisualStudio.nuspec" />
   </ItemGroup>
   <ItemGroup>

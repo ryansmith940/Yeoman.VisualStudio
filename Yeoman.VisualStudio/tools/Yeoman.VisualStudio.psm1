@@ -1,24 +1,4 @@
-﻿function Get-CommandExists($commandName)
-{
-	Try
-	{
-		$oldPreference = $ErrorActionPreference
-		$ErrorActionPreference = 'stop'
-
-		$knownCommands = Get-Command $commandName
-	    return $True
-	}
-	Catch
-	{
-		return $False
-	}
-	Finally
-	{
-		$ErrorActionPreference = $oldPreference
-	}
-}
-
-function Initialize-Environment
+﻿function Initialize-Environment
 {
 	if (-Not (Get-CommandExists node))
 	{
@@ -47,6 +27,26 @@ function Install-NpmModule($moduleName, $globally)
 	Invoke-Command $command
 }
 
+function Get-CommandExists($commandName)
+{
+	Try
+	{
+		$oldPreference = $ErrorActionPreference
+		$ErrorActionPreference = 'stop'
+
+		$knownCommands = Get-Command $commandName
+	    return $True
+	}
+	Catch
+	{
+		return $False
+	}
+	Finally
+	{
+		$ErrorActionPreference = $oldPreference
+	}
+}
+
 function Invoke-Command
 {
 	param(
@@ -56,20 +56,6 @@ function Invoke-Command
 	$cmd = "cmd"
 	$arguments = "/c " + $command + " " + $args + " & pause"
 	Start-Process $cmd $arguments -Wait
-}
-
-function Get-IgnoredDirectories
-{
-	$proj = Get-Project
-	$ignoreFileName = "ignore.properties"
-	$ignoreFileExists = Get-ItemInProject $proj $ignoreFileName
-	if($ignoreFileExists)
-	{
-		$projectFullPath = $proj.Properties.Item("FullPath").Value
-		$ignoreFileFullPath = Join-Path $projectItemFullPath $ignoreFileName
-
-		Get-Content $ignoreFileFullPath
-	}
 }
 
 function Invoke-Yeoman
@@ -102,17 +88,22 @@ function Invoke-Yeoman
 				{
 					if($itemName -eq $filename)
 					{
+						Write-Host "Write file $fileToAdd"
 				 		$addedFileProjectItem = $projectItem.ProjectItems.AddFromFile($fileToAdd)
 					}
-					elif($ignoredDirectories -notcontains $itemName)
+					elseif($ignoredDirectories -notcontains $itemName)
 					{
+						Write-Host "Adding Directory $itemName"
 						$projectItemFullPath = $projectItem.Properties.Item("FullPath").Value
 						$folderFullPath = Join-Path $projectItemFullPath $itemName
+
+						Write-Host "Full folder path: $folderFullPath"
 						$addedDirectoryItems = $projectItem.ProjectItems.AddFromDirectory($folderFullPath)
 					}
 					else
 					{
-						continue
+						Write-Host "Skipping item $itemName"
+						break
 					}
 				}
 				
@@ -136,9 +127,27 @@ function Get-ItemInProject
 	return $foundItem
 }
 
+function Get-IgnoredDirectories
+{
+	$proj = Get-Project
+	$ignoreFileName = "yeo.ignore"
+	$ignoreFileExists = Get-ItemInProject $proj $ignoreFileName
+	if($ignoreFileExists)
+	{
+		$projectFullPath = $proj.Properties.Item("FullPath").Value
+		$ignoreFileFullPath = Join-Path $projectFullPath $ignoreFileName
+
+		Get-Content $ignoreFileFullPath | where {$_ -notlike "#*"} | unique
+	}
+}
+
 Set-Alias yeo Invoke-Yeoman
 
 Export-ModuleMember Initialize-Environment
-Export-ModuleMember Invoke-Command
+Export-ModuleMember Install-NpmModule
 Export-ModuleMember -Function Invoke-Yeoman -Alias yeo
+
+## Remove these in production
+Export-ModuleMember Invoke-Command
 Export-ModuleMember Get-CommandExists
+Export-ModuleMember Get-IgnoredDirectories

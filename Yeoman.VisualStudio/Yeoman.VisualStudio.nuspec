@@ -6,11 +6,12 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <projectUrl>https://ticode.phibred.com/users/smithry/repos/yeoman.visualstudio/browse</projectUrl>
+    <projectUrl>https://github.com/ryansmith940/Yeoman.VisualStudio</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>Copyright 2015</copyright>
     <tags>Template scaffold</tags>
+    <developmentDependency>true</developmentDependency>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
