@@ -1,16 +1,16 @@
-﻿* Yeoman.VisualStudio *
+# Yeoman.VisualStudio
 A NuGet package for integrating Yeoman with VisualStudio.
 
-** Prerequisites **
+## Prerequisites
 - npm is installed and included in your `PATH`
 - A yeoman generator is installed globally
 
-** Installation **
+## Installation
 ```powershell
 Install-Package Yeoman.VisualStudio
 ```
 
-** Usage **
+## Usage 
 ```powershell
 yeo <generator-name>
 ```
