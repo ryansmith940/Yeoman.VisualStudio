@@ -1,5 +1,5 @@
 # Yeoman.VisualStudio
-A NuGet package for integrating [Yeoman](http://yeoman.io/) with VisualStudio.  This package adds a cmdlet to your Package Manager Console called `yeo`.  Invoking this cmdlet starts Yeoman, executes the given command, and adds the created files to your VisualStudio project.
+A NuGet package for integrating [Yeoman](http://yeoman.io/) with Visual Studio.  This package adds a cmdlet to your Package Manager Console called `yeo`.  Invoking this cmdlet starts Yeoman, executes the given command, and adds the created files to your Visual Studio project.
 
 ## Prerequisites
 - npm is installed and included in your `PATH`
@@ -22,7 +22,7 @@ PM> Install-NpmModule <module-name> [$True] # Install Globally
 ```
 
 ## Configuration
-This package adds a file called ```yeo.ignore``` to your VisualStudio project. Each line of the file indicates a directory name. If the Yeoman generator adds a file under any of those directory names, the file will not be added to your VisualStudio project. By default, this file includes ```bower_components``` and ```node_modules```.  If Yeoman adds files to these directories, they will not be added to your project.
+This package adds a file called ```yeo.ignore``` to your Visual Studio project. Each line of the file indicates a directory name. If the Yeoman generator adds a file under any of those directory names, the file will not be added to your Visual Studio project. By default, this file includes ```bower_components``` and ```node_modules```.  If Yeoman adds files to these directories, they will not be added to your project.
 
 ## Resources
 - Available generators: http://yeoman.io/generators/
