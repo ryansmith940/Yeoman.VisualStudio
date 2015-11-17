@@ -22,7 +22,7 @@ PM> Install-NpmModule <module-name> [$True] # Install Globally
 ```
 
 ## Configuration
-This package adds a file called ```yeo.ignore``` to your VisualStudio project. Each line of the file indicates a directory name. If the Yeoman generator add a file under any of those directory names, the file will not be added to your VisualStudio project. By default, this file includes ```bower_components``` and ```node_modules```.  If Yeoman adds files to these directories, they will not be added to your project.
+This package adds a file called ```yeo.ignore``` to your VisualStudio project. Each line of the file indicates a directory name. If the Yeoman generator adds a file under any of those directory names, the file will not be added to your VisualStudio project. By default, this file includes ```bower_components``` and ```node_modules```.  If Yeoman adds files to these directories, they will not be added to your project.
 
 ## Resources
 - Available generators: http://yeoman.io/generators/
